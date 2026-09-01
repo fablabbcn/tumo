@@ -44,6 +44,14 @@ buoy/buoy.ino       sketch for the buoy
 planter/planter.ino sketch for the planter
 ```
 
+## Running this software
+
+To run this code on the Grove Beginner Kit you will need to follow the instructions in the Seeed wiki to
+
+1) [install Arduino IDE (if you don't have it)](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/#install-the-arduino-ide)
+2) [install the CP2102 USB driver](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/#install-the-usb-driver), and
+3) [Start the Arduino IDE](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/#start-the-arduino-ide)
+
 ---
 
 ## buoy.ino

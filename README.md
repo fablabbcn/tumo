@@ -8,6 +8,7 @@ Arduino**](https://wiki.seeedstudio.com/Grove-Beginner-Kit-For-Arduino/). The tw
 built almost entirely from the sensors and actuators already on the board, plus
 two external modules for the planter.
 
+
 ## Hardware
 
 The Grove Beginner Kit is a single board with a Seeeduino Lotus (Arduino
@@ -33,6 +34,8 @@ socket for attaching external sensors.
 - **buoy** — none required.
 - **planter** — soil-moisture sensor (analog, e.g. A1) and a relay
   module (digital, e.g. D2) driving the pump or valve.
+  - [Soil Sensor](https://www.amazon.es/ARCELI-higr%C3%B3metro-detecci%C3%B3n-Humedad-Arduino/dp/B07CQT5RC8)
+  - [Grove Relay Module](https://wiki.seeedstudio.com/Grove-Relay/)
 
 ## Repo layout
 
@@ -93,9 +96,10 @@ through a relay.
 
 ### Calibration
 
-The capacitive sensor needs a two-point calibration before the % mapping means
+The resistive probe needs a two-point calibration before the % mapping means
 anything: note the raw analog value in dry air and again with the probe in a
-glass of water, then `map()` between those two. Do this once per sensor.
+glass of water, then `map()` between those two. Do this once per sensor. A
+resistive probe reads **high in dry soil, low in wet soil**.
 
 ### Safety
 

@@ -33,7 +33,7 @@
 const int LED_PIN   = 4;    // on-board red LED
 const int LIGHT_PIN = A6;   // on-board light sensor
 
-const unsigned long SAMPLE_INTERVAL_MS = 1000;
+const unsigned long SAMPLE_INTERVAL_MS = 60;
 
 SPL07_003 baro;
 LIS3DHTR<TwoWire> accel;
@@ -47,7 +47,7 @@ void pulseLed() {
 }
 
 void setup() {
-  Serial.begin(9600);
+  Serial.begin(115200);
   pinMode(LED_PIN, OUTPUT);
 
   Wire.begin();

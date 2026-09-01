@@ -29,11 +29,11 @@
 #include <U8g2lib.h>
 
 const int SOIL_PIN  = A1;   // resistive soil probe (external)
-const int RELAY_PIN = 2;    // relay module (external) -> pump / valve
+const int RELAY_PIN = 2;    // D2: relay module (external) -> pump / valve
 
 // --- calibration: raw analogRead() values, replace with your own ---
 const int SOIL_RAW_DRY = 1023;   // probe in air
-const int SOIL_RAW_WET = 400;    // probe in water
+const int SOIL_RAW_WET = 250;    // probe in water
 
 // water while moisture is below this %, stop once it climbs back above it
 const int MOISTURE_THRESHOLD = 35;

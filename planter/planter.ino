@@ -14,13 +14,16 @@
  *           serial USB @ 115200 baud
  *
  * Bibliotecas (Arduino IDE -> Ferramentas -> Gerenciar Bibliotecas...):
- *   - "U8g2"                              (OLED)
+ *   - "U8g2"                              (a tela; usamos o modo U8x8, leve)
  *   - "Grove Temperature And Humidity Sensor"  (DHT20)
  *
- * OBS sobre o sensor de ar: os kits novos (a partir de out/2025) trazem o DHT20,
- * que fala por I2C (o rotulo diz "IIC"), no endereco 0x38. Os kits antigos tem
- * um DHT11 no pino D3 - nesse caso troque para  DHT dht(D3, DHT11);  e nao
- * precisa do Wire para ele.
+ * OBS tela: usamos a API U8x8 (so texto, sem buffer) porque o Arduino Uno tem
+ * pouca memoria e o buffer completo do U8g2 (1 KB) + a biblioteca do DHT20
+ * deixam a tela sem espaco. U8x8 gasta quase nada de RAM.
+ *
+ * OBS sensor de ar: os kits novos (a partir de out/2025) trazem o DHT20, que
+ * fala por I2C (o rotulo diz "IIC"), no endereco 0x38. Os kits antigos tem um
+ * DHT11 no pino D3 - nesse caso troque para  DHT dht(D3, DHT11);
  *
  * CALIBRACAO da sonda de solo - faca isso uma vez para cada sonda:
  *   1. Envie este sketch e abra Ferramentas -> Monitor Serial.
@@ -31,7 +34,7 @@
  */
 
 #include <Wire.h>
-#include <U8g2lib.h>
+#include <U8x8lib.h>
 #include "Grove_Temperature_And_Humidity_Sensor.h"
 
 const int SOIL_PIN  = A1;   // sonda resistiva de umidade do solo (externa)
@@ -50,7 +53,7 @@ const int RELAY_ON = HIGH;
 
 const unsigned long SAMPLE_INTERVAL_MS = 1000;   // tempo entre leituras (ms)
 
-U8G2_SSD1306_128X64_NONAME_F_HW_I2C u8g2(U8G2_R0, U8X8_PIN_NONE);
+U8X8_SSD1306_128X64_NONAME_HW_I2C u8x8(U8X8_PIN_NONE);
 DHT dht(DHT20);   // sensor de ar por I2C (endereco 0x38)
 
 unsigned long lastSample = 0;
@@ -70,7 +73,11 @@ void setup() {
   relayOff();   // bomba desligada ao ligar
 
   Wire.begin();
-  u8g2.begin();
+
+  u8x8.begin();
+  u8x8.setFlipMode(1);   // no kit a tela fica de cabeca para baixo; 0 desvira
+  u8x8.setFont(u8x8_font_chroma48medium8_r);
+
   dht.begin();
 
   // cabecalho do CSV
@@ -106,28 +113,22 @@ void loop() {
   Serial.print(umidadeAr, 1);   Serial.print(',');
   Serial.println(regando ? 1 : 0);
 
-  // --- OLED ---
-  u8g2.clearBuffer();
+  // --- OLED (espacos no fim de cada linha apagam o texto anterior) ---
+  u8x8.setCursor(0, 0);
+  u8x8.print(F("Vaso            "));
 
-  u8g2.setFont(u8g2_font_ncenB08_tr);
-  u8g2.drawStr(0, 10, "Vaso");
+  u8x8.setCursor(0, 2);
+  u8x8.print(F("Solo: "));
+  u8x8.print(umidadeSolo);
+  u8x8.print(F(" %      "));
 
-  u8g2.setFont(u8g2_font_6x12_tr);
-  u8g2.setCursor(0, 28);
-  u8g2.print(F("Solo: "));
-  u8g2.print(umidadeSolo);
-  u8g2.print(F(" %"));
+  u8x8.setCursor(0, 4);
+  u8x8.print(F("Ar: "));
+  u8x8.print(tempAr, 0);
+  u8x8.print(F("C "));
+  u8x8.print(umidadeAr, 0);
+  u8x8.print(F("%     "));
 
-  u8g2.setCursor(0, 42);
-  u8g2.print(F("Ar: "));
-  u8g2.print(tempAr, 0);
-  u8g2.print(F("C  "));
-  u8g2.print(umidadeAr, 0);
-  u8g2.print(F(" %"));
-
-  u8g2.setFont(u8g2_font_ncenB10_tr);
-  u8g2.setCursor(0, 62);
-  u8g2.print(regando ? F("regando...") : F("solo OK"));
-
-  u8g2.sendBuffer();
+  u8x8.setCursor(0, 6);
+  u8x8.print(regando ? F("regando...      ") : F("solo OK         "));
 }
